@@ -11,7 +11,7 @@ export class EmailService {
   async sendAppointmentCreated(appointment: Appointment): Promise<void> {
     const emailData = {
       from: process.env.FROM_EMAIL || 'noreply@tutoria.com',
-      to: [process.env.TUTOR_EMAIL || 'tutor@example.com'], // En producción obtener del usuario
+      to: ['alanenmexico12@gmail.com','223200@ids.upchiapas.edu.mx'], // En producción obtener del usuario
       subject: 'Nueva Cita Programada',
       html: this.getAppointmentCreatedTemplate(appointment)
     };
