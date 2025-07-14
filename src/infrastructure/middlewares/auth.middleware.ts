@@ -17,7 +17,6 @@ export interface JWTPayload {
 
 export const authMiddleware = (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    console.log(req.headers);
     const authHeader = req.headers.authorization;
 
     if (!authHeader) {

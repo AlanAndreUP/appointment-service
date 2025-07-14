@@ -1,16 +1,16 @@
 import { AppointmentRepository } from '@domain/repositories/AppointmentRepository.interface';
 import { EnhancedEmailService } from '@application/services/EnhancedEmailService';
+import { BaseUseCase, BaseContext } from './BaseUseCase';
 
-export interface DeleteAppointmentContext {
-  userToken: string;
-  userId: string;
-}
+export interface DeleteAppointmentContext extends BaseContext {}
 
-export class DeleteAppointmentUseCase {
+export class DeleteAppointmentUseCase extends BaseUseCase {
   constructor(
     private readonly appointmentRepository: AppointmentRepository,
     private readonly emailService: EnhancedEmailService
-  ) {}
+  ) {
+    super();
+  }
 
   async execute(id: string, context?: DeleteAppointmentContext): Promise<void> {
     // Verificar que la cita existe
@@ -20,8 +20,8 @@ export class DeleteAppointmentUseCase {
     }
 
     // Verificar que el usuario autenticado sea el alumno de la cita
-    if (context?.userId && context.userId !== appointment.id_alumno) {
-      throw new Error('Solo el alumno de la cita puede eliminarla');
+    if (context?.userId) {
+      this.validateStudentOwnership(context.userId, appointment.id_alumno);
     }
 
     if (appointment.isDeleted()) {
@@ -53,42 +53,13 @@ export class DeleteAppointmentUseCase {
 
   // Método de conveniencia para usar con tokens extraídos del request
   async executeWithTokens(id: string, req: any): Promise<void> {
-    const userToken = this.extractTokenFromRequest(req);
-    const userId = this.extractUserIdFromRequest(req);
-    
-    if (!userToken) {
-      throw new Error('Token de autorización requerido');
-    }
-    
-    if (!userId) {
-      throw new Error('UserId requerido');
-    }
+    const { token, userId } = this.extractAuthFromRequest(req);
     
     return this.execute(id, {
-      userToken,
+      userToken: token,
       userId
     });
   }
 
-  private extractTokenFromRequest(req: any): string | undefined {
-    const authHeader = req.headers?.authorization;
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return undefined;
-    }
-    return authHeader.substring(7);
-  }
 
-  private extractUserIdFromRequest(req: any): string | undefined {
-    // Usar la información del middleware de autenticación
-    if (req.user?.userId) {
-      return req.user.userId;
-    }
-    
-    // Fallback: buscar en diferentes lugares donde puede estar el userId
-    return req.headers?.['user-id'] || 
-           req.query?.userId || 
-           req.body?.userId || 
-           req.params?.userId || 
-           undefined;
-  }
 } 

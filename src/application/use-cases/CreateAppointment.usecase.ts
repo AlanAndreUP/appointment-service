@@ -2,6 +2,7 @@ import { Appointment } from '@domain/entities/Appointment.entity';
 import { AppointmentRepository } from '@domain/repositories/AppointmentRepository.interface';
 import { EnhancedEmailService } from '@application/services/EnhancedEmailService';
 import { ApiResponse } from '@shared/types/response.types';
+import { BaseUseCase, BaseContext } from './BaseUseCase';
 
 export interface CreateAppointmentRequest {
   id_tutor: string;
@@ -10,18 +11,18 @@ export interface CreateAppointmentRequest {
   to_do?: string;
 }
 
-export interface CreateAppointmentContext {
-  userToken: string;
-  userId: string; // userId del usuario autenticado (alumno)
+export interface CreateAppointmentContext extends BaseContext {
   tutorUserId: string; // userId del tutor
   studentUserId: string; // userId del alumno
 }
 
-export class CreateAppointmentUseCase {
+export class CreateAppointmentUseCase extends BaseUseCase {
   constructor(
     private appointmentRepository: AppointmentRepository,
     private emailService: EnhancedEmailService
-  ) {}
+  ) {
+    super();
+  }
 
   async execute(
     request: CreateAppointmentRequest, 
@@ -46,7 +47,6 @@ export class CreateAppointmentUseCase {
         }
 
         console.log('📧 Enviando notificaciones a tutor y alumno');
-        console.log(context);
         await this.emailService.sendAppointmentCreatedToMultipleUsers(savedAppointment, {
           userToken: context.userToken,
           tutorUserId: context.tutorUserId,
@@ -82,29 +82,18 @@ export class CreateAppointmentUseCase {
     request: CreateAppointmentRequest,
     req: any // Express request object
   ): Promise<ApiResponse> {
-    const userToken = this.extractTokenFromRequest(req);
-    const authenticatedUserId = this.extractUserIdFromRequest(req);
-    
-    if (!userToken) {
-      throw new Error('Token de autorización requerido');
-    }
-    
-    if (!authenticatedUserId) {
-      throw new Error('UserId requerido');
-    }
+    const { token, userId } = this.extractAuthFromRequest(req);
     
     // Verificar que el usuario autenticado sea el alumno
-    if (authenticatedUserId !== request.id_alumno) {
-      throw new Error('Solo el alumno puede crear citas');
-    }
+    this.validateStudentCreation(userId, request.id_alumno);
     
     // Usar los IDs del request como userIds para los emails
     const tutorUserId = request.id_tutor;
     const studentUserId = request.id_alumno;
     
     return this.execute(request, {
-      userToken,
-      userId: authenticatedUserId, // userId del usuario autenticado (alumno)
+      userToken: token,
+      userId,
       tutorUserId,
       studentUserId
     });
@@ -112,25 +101,5 @@ export class CreateAppointmentUseCase {
 
 
 
-  private extractTokenFromRequest(req: any): string | undefined {
-    const authHeader = req.headers?.authorization;
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return undefined;
-    }
-    return authHeader.substring(7);
-  }
 
-  private extractUserIdFromRequest(req: any): string | undefined {
-    // Usar la información del middleware de autenticación
-    if (req.body.id_alumno) {
-      return req.body.id_alumno;
-    }
-    
-    // Fallback: buscar en diferentes lugares donde puede estar el userId
-    return req.headers?.['user-id'] || 
-           req.query?.userId || 
-           req.body?.userId || 
-           req.params?.userId || 
-           undefined;
-  }
 } 

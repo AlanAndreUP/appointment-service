@@ -2,6 +2,7 @@ import { UserService } from './UserService.interface';
 import { ExternalAuthService } from './ExternalAuthService';
 import { UserInfo } from '@domain/value-objects/UserInfo';
 import { UserId } from '@domain/value-objects/UserId';
+import { RequestUtils } from '@shared/utils/RequestUtils';
 
 export class ExternalUserService implements UserService {
   private authService: ExternalAuthService;
@@ -177,38 +178,8 @@ export class ExternalUserService implements UserService {
    * Obtiene usuario desde el contexto de request (donde está el token)
    */
   async getUserFromRequest(req: any): Promise<UserInfo> {
-    const token = this.extractTokenFromRequest(req);
-    const userId = this.extractUserIdFromRequest(req);
-    if (!token) {
-      throw new Error('Token de autorización requerido');
-    }
-    if (!userId) {
-      throw new Error('UserId requerido');
-    }
+    const { token, userId } = RequestUtils.extractAndValidateAuth(req);
     return await this.getUserByToken(token, userId);
-  }
-
-  /**
-   * Extrae el token del header Authorization
-   */
-  private extractTokenFromRequest(req: any): string | null {
-    const authHeader = req.headers?.authorization;
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return null;
-    }
-    return authHeader.substring(7);
-  }
-
-  /**
-   * Extrae el userId del request (puede venir en headers, query params, o body)
-   */
-  private extractUserIdFromRequest(req: any): string | null {
-    // Buscar en diferentes lugares donde puede estar el userId
-    return req.headers?.['user-id'] || 
-           req.query?.userId || 
-           req.body?.userId || 
-           req.params?.userId || 
-           null;
   }
 
   /**

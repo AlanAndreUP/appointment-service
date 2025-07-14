@@ -1,17 +1,17 @@
 import { AppointmentRepository } from '@domain/repositories/AppointmentRepository.interface';
 import { EstadoCita, AppointmentResponse } from '@shared/types/response.types';
 import { EnhancedEmailService } from '@application/services/EnhancedEmailService';
+import { BaseUseCase, BaseContext } from './BaseUseCase';
 
-export interface UpdateAppointmentStatusContext {
-  userToken: string;
-  userId: string;
-}
+export interface UpdateAppointmentStatusContext extends BaseContext {}
 
-export class UpdateAppointmentStatusUseCase {
+export class UpdateAppointmentStatusUseCase extends BaseUseCase {
   constructor(
     private readonly appointmentRepository: AppointmentRepository,
     private readonly emailService: EnhancedEmailService
-  ) {}
+  ) {
+    super();
+  }
 
   async execute(
     id: string, 
@@ -25,8 +25,8 @@ export class UpdateAppointmentStatusUseCase {
     }
 
     // Verificar que el usuario autenticado sea el alumno de la cita
-    if (context?.userId && context.userId !== existingAppointment.id_alumno) {
-      throw new Error('Solo el alumno de la cita puede cambiar su estado');
+    if (context?.userId) {
+      this.validateStudentOwnership(context.userId, existingAppointment.id_alumno);
     }
 
     if (existingAppointment.isDeleted()) {
@@ -85,42 +85,13 @@ export class UpdateAppointmentStatusUseCase {
     newStatus: EstadoCita,
     req: any // Express request object
   ): Promise<AppointmentResponse> {
-    const userToken = this.extractTokenFromRequest(req);
-    const userId = this.extractUserIdFromRequest(req);
-    
-    if (!userToken) {
-      throw new Error('Token de autorización requerido');
-    }
-    
-    if (!userId) {
-      throw new Error('UserId requerido');
-    }
+    const { token, userId } = this.extractAuthFromRequest(req);
     
     return this.execute(id, newStatus, {
-      userToken,
+      userToken: token,
       userId
     });
   }
 
-  private extractTokenFromRequest(req: any): string | undefined {
-    const authHeader = req.headers?.authorization;
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return undefined;
-    }
-    return authHeader.substring(7);
-  }
 
-  private extractUserIdFromRequest(req: any): string | undefined {
-    // Usar la información del middleware de autenticación
-    if (req.user?.userId) {
-      return req.user.userId;
-    }
-    
-    // Fallback: buscar en diferentes lugares donde puede estar el userId
-    return req.headers?.['user-id'] || 
-           req.query?.userId || 
-           req.body?.userId || 
-           req.params?.userId || 
-           undefined;
-  }
 } 
