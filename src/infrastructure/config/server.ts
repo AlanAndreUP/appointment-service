@@ -22,6 +22,11 @@ export class AppServer {
   }
 
   private setupMiddlewares(): void {
+
+      this.app.set('trust proxy', true);
+      console.log('🔧 Trust proxy habilitado para producción');
+
+
     // Seguridad
     this.app.use(helmet());
 
