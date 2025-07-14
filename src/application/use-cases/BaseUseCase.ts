@@ -16,9 +16,6 @@ export abstract class BaseUseCase {
   /**
    * Verifica que el usuario autenticado sea el alumno de la cita
    */
-  protected validateStudentOwnership(authenticatedUserId: string, appointmentStudentId: string): void {
-    RequestUtils.validateStudentOwnership(authenticatedUserId, appointmentStudentId);
-  }
 
   /**
    * Verifica que el usuario autenticado sea el alumno del request

@@ -68,15 +68,7 @@ export class RequestUtils {
   /**
    * Verifica que el usuario autenticado sea el alumno de la cita
    */
-  static validateStudentOwnership(authenticatedUserId: string, appointmentStudentId: string): void {
-    if (authenticatedUserId !== appointmentStudentId) {
-      throw new Error('Solo el alumno de la cita puede realizar esta operación');
-    }
-  }
 
-  /**
-   * Verifica que el usuario autenticado sea el alumno del request
-   */
   static validateStudentCreation(authenticatedUserId: string, requestStudentId: string): void {
     if (authenticatedUserId !== requestStudentId) {
       throw new Error('Solo el alumno puede crear citas');

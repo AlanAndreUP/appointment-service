@@ -24,10 +24,6 @@ export class UpdateAppointmentStatusUseCase extends BaseUseCase {
       throw new Error('Cita no encontrada');
     }
 
-    // Verificar que el usuario autenticado sea el alumno de la cita
-    if (context?.userId) {
-      this.validateStudentOwnership(context.userId, existingAppointment.id_alumno);
-    }
 
     if (existingAppointment.isDeleted()) {
       throw new Error('No se puede actualizar una cita eliminada');

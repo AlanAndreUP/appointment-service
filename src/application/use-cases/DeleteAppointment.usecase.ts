@@ -19,10 +19,7 @@ export class DeleteAppointmentUseCase extends BaseUseCase {
       throw new Error('Cita no encontrada');
     }
 
-    // Verificar que el usuario autenticado sea el alumno de la cita
-    if (context?.userId) {
-      this.validateStudentOwnership(context.userId, appointment.id_alumno);
-    }
+
 
     if (appointment.isDeleted()) {
       throw new Error('La cita ya ha sido eliminada');
