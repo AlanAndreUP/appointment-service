@@ -52,7 +52,7 @@ export class AppServer {
 
   private setupRoutes(): void {
     // Rutas principales
-    this.app.use('/', createRoutes(this.dependencies.appointmentController));
+    this.app.use('/s1', createRoutes(this.dependencies.appointmentController));
   }
 
   private setupErrorHandling(): void {
