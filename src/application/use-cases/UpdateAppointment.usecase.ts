@@ -1,19 +1,33 @@
 import { AppointmentRepository } from '@domain/repositories/AppointmentRepository.interface';
 import { Appointment } from '@domain/entities/Appointment.entity';
 import { UpdateAppointmentRequest, AppointmentResponse } from '@shared/types/response.types';
-import { EmailService } from '@application/services/Email.service';
+import { EnhancedEmailService } from '@application/services/EnhancedEmailService';
+
+export interface UpdateAppointmentContext {
+  userToken: string;
+  userId: string;
+}
 
 export class UpdateAppointmentUseCase {
   constructor(
     private readonly appointmentRepository: AppointmentRepository,
-    private readonly emailService: EmailService
+    private readonly emailService: EnhancedEmailService
   ) {}
 
-  async execute(id: string, request: UpdateAppointmentRequest): Promise<AppointmentResponse> {
+  async execute(
+    id: string, 
+    request: UpdateAppointmentRequest, 
+    context?: UpdateAppointmentContext
+  ): Promise<AppointmentResponse> {
     // Buscar la cita existente
     const existingAppointment = await this.appointmentRepository.findById(id);
     if (!existingAppointment) {
       throw new Error('Cita no encontrada');
+    }
+
+    // Verificar que el usuario autenticado sea el alumno de la cita
+    if (context?.userId && context.userId !== existingAppointment.id_alumno) {
+      throw new Error('Solo el alumno de la cita puede modificarla');
     }
 
     if (!existingAppointment.canBeModified()) {
@@ -72,10 +86,20 @@ export class UpdateAppointmentUseCase {
 
     // Enviar notificación por email
     try {
+      if (!context?.userToken) {
+        throw new Error('Se requiere token de usuario para enviar notificaciones');
+      }
+
       if (request.estado_cita === 'cancelada') {
-        await this.emailService.sendAppointmentCancelled(savedAppointment);
+        await this.emailService.sendAppointmentCancelled(savedAppointment, {
+          userToken: context.userToken,
+          userId: context.userId
+        });
       } else {
-        await this.emailService.sendAppointmentUpdated(savedAppointment);
+        await this.emailService.sendAppointmentUpdated(savedAppointment, {
+          userToken: context.userToken,
+          userId: context.userId
+        });
       }
     } catch (emailError) {
       console.error('Error enviando email de actualización de cita:', emailError);
@@ -94,5 +118,50 @@ export class UpdateAppointmentUseCase {
       to_do: savedAppointment.to_do,
       finish_to_do: savedAppointment.finish_to_do
     };
+  }
+
+  // Método de conveniencia para usar con tokens extraídos del request
+  async executeWithTokens(
+    id: string,
+    request: UpdateAppointmentRequest,
+    req: any // Express request object
+  ): Promise<AppointmentResponse> {
+    const userToken = this.extractTokenFromRequest(req);
+    const userId = this.extractUserIdFromRequest(req);
+    
+    if (!userToken) {
+      throw new Error('Token de autorización requerido');
+    }
+    
+    if (!userId) {
+      throw new Error('UserId requerido');
+    }
+    
+    return this.execute(id, request, {
+      userToken,
+      userId
+    });
+  }
+
+  private extractTokenFromRequest(req: any): string | undefined {
+    const authHeader = req.headers?.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return undefined;
+    }
+    return authHeader.substring(7);
+  }
+
+  private extractUserIdFromRequest(req: any): string | undefined {
+    // Usar la información del middleware de autenticación
+    if (req.user?.userId) {
+      return req.user.userId;
+    }
+    
+    // Fallback: buscar en diferentes lugares donde puede estar el userId
+    return req.headers?.['user-id'] || 
+           req.query?.userId || 
+           req.body?.userId || 
+           req.params?.userId || 
+           undefined;
   }
 } 

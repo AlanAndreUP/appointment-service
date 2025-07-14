@@ -1,0 +1,1 @@
+export { AppointmentAggregate, AppointmentCreationData, AppointmentUpdateData } from './AppointmentAggregate'; 

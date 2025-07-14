@@ -27,7 +27,8 @@ export class AppointmentController {
   createAppointment = async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
     try {
       const request: CreateAppointmentRequest = req.body;
-      const result = await this.createAppointmentUseCase.execute(request);
+      console.log(request);
+      const result = await this.createAppointmentUseCase.executeWithTokens(request, req);
 
       const response: ApiResponse = {
         data: result,
@@ -97,7 +98,7 @@ export class AppointmentController {
       const { id } = req.params;
       const request: UpdateAppointmentRequest = req.body;
       
-      const result = await this.updateAppointmentUseCase.execute(id, request);
+      const result = await this.updateAppointmentUseCase.executeWithTokens(id, request, req);
 
       const response: ApiResponse = {
         data: result,
@@ -116,7 +117,7 @@ export class AppointmentController {
       const { id } = req.params;
       const { estado_cita } = req.body;
       
-      const result = await this.updateAppointmentStatusUseCase.execute(id, estado_cita);
+      const result = await this.updateAppointmentStatusUseCase.executeWithTokens(id, estado_cita, req);
 
       const response: ApiResponse = {
         data: result,
@@ -133,7 +134,7 @@ export class AppointmentController {
   deleteAppointment = async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
     try {
       const { id } = req.params;
-      await this.deleteAppointmentUseCase.execute(id);
+      await this.deleteAppointmentUseCase.executeWithTokens(id, req);
 
       const response: ApiResponse = {
         data: null,

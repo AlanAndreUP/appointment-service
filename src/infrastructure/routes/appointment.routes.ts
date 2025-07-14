@@ -14,8 +14,6 @@ import { strictRateLimit } from '@infrastructure/middlewares/rateLimit.middlewar
 export const createAppointmentRoutes = (appointmentController: AppointmentController): Router => {
   const router = Router();
 
-  // Aplicar autenticación a todas las rutas
-  router.use(authMiddleware);
 
   /**
    * @swagger
