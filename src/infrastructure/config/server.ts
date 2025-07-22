@@ -31,9 +31,8 @@ export class AppServer {
     this.app.use(helmet());
 
     // CORS
-    const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:3000'];
     this.app.use(cors({
-      origin: allowedOrigins,
+      origin: '*', // Permitir cualquier origen
       credentials: true,
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
       allowedHeaders: ['Content-Type', 'Authorization']
