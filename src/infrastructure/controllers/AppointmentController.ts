@@ -28,15 +28,8 @@ export class AppointmentController {
     try {
       const request: CreateAppointmentRequest = req.body;
       console.log(request);
-      const result = await this.createAppointmentUseCase.executeWithTokens(request, req);
-
-      const response: ApiResponse = {
-        data: result,
-        message: 'Cita creada exitosamente',
-        status: 'success'
-      };
-
-      res.status(201).json(response);
+      const apiResponse = await this.createAppointmentUseCase.executeWithTokens(request, req);
+      res.status(201).json(apiResponse);
     } catch (error) {
       next(error);
     }
@@ -61,16 +54,8 @@ export class AppointmentController {
         }
       });
 
-      const result = await this.getAppointmentsUseCase.execute(filters);
-
-      const response: ApiResponse = {
-        data: result.appointments,
-        message: 'Citas obtenidas exitosamente',
-        status: 'success',
-        pagination: result.pagination
-      };
-
-      res.status(200).json(response);
+      const apiResponse = await this.getAppointmentsUseCase.execute(filters);
+      res.status(200).json(apiResponse);
     } catch (error) {
       next(error);
     }
@@ -79,15 +64,8 @@ export class AppointmentController {
   getAppointmentById = async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
     try {
       const { id } = req.params;
-      const result = await this.getAppointmentByIdUseCase.execute(id);
-
-      const response: ApiResponse = {
-        data: result,
-        message: 'Cita obtenida exitosamente',
-        status: 'success'
-      };
-
-      res.status(200).json(response);
+      const apiResponse = await this.getAppointmentByIdUseCase.execute(id);
+      res.status(200).json(apiResponse);
     } catch (error) {
       next(error);
     }
@@ -97,16 +75,8 @@ export class AppointmentController {
     try {
       const { id } = req.params;
       const request: UpdateAppointmentRequest = req.body;
-      
-      const result = await this.updateAppointmentUseCase.executeWithTokens(id, request, req);
-
-      const response: ApiResponse = {
-        data: result,
-        message: 'Cita actualizada exitosamente',
-        status: 'success'
-      };
-
-      res.status(200).json(response);
+      const apiResponse = await this.updateAppointmentUseCase.executeWithTokens(id, request, req);
+      res.status(200).json(apiResponse);
     } catch (error) {
       next(error);
     }
@@ -116,16 +86,8 @@ export class AppointmentController {
     try {
       const { id } = req.params;
       const { estado_cita } = req.body;
-      
-      const result = await this.updateAppointmentStatusUseCase.executeWithTokens(id, estado_cita, req);
-
-      const response: ApiResponse = {
-        data: result,
-        message: 'Estado de cita actualizado exitosamente',
-        status: 'success'
-      };
-
-      res.status(200).json(response);
+      const apiResponse = await this.updateAppointmentStatusUseCase.executeWithTokens(id, estado_cita, req);
+      res.status(200).json(apiResponse);
     } catch (error) {
       next(error);
     }
@@ -134,15 +96,8 @@ export class AppointmentController {
   deleteAppointment = async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
     try {
       const { id } = req.params;
-      await this.deleteAppointmentUseCase.executeWithTokens(id, req);
-
-      const response: ApiResponse = {
-        data: null,
-        message: 'Cita eliminada exitosamente',
-        status: 'success'
-      };
-
-      res.status(200).json(response);
+      const apiResponse = await this.deleteAppointmentUseCase.executeWithTokens(id, req);
+      res.status(200).json(apiResponse);
     } catch (error) {
       next(error);
     }

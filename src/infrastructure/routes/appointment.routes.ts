@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import { AppointmentController } from '@infrastructure/controllers/AppointmentController';
-import { authMiddleware } from '@infrastructure/middlewares/auth.middleware';
 import { 
   validateCreateAppointment,
   validateUpdateAppointment,
@@ -33,7 +32,7 @@ export const createAppointmentRoutes = (appointmentController: AppointmentContro
    *           example:
    *             id_tutor: "tutor_123"
    *             id_alumno: "alumno_456"
-   *             fecha_cita: "2024-01-15T10:00:00.000Z"
+   *             fecha_cita: "2025-11-15T10:00:00.000Z"
    *             checklist:
    *               - description: "Revisar álgebra básica y ecuaciones lineales"
    *                 completed: false
@@ -119,14 +118,14 @@ export const createAppointmentRoutes = (appointmentController: AppointmentContro
    *           type: string
    *           format: date-time
    *         description: Filtrar citas desde esta fecha
-   *         example: "2024-01-01T00:00:00.000Z"
+   *         example: "2025-11-01T00:00:00.000Z"
    *       - in: query
    *         name: fecha_hasta
    *         schema:
    *           type: string
    *           format: date-time
    *         description: Filtrar citas hasta esta fecha
-   *         example: "2024-01-31T23:59:59.999Z"
+   *         example: "2025-11-31T23:59:59.999Z"
    *       - in: query
    *         name: page
    *         schema:
@@ -258,7 +257,7 @@ export const createAppointmentRoutes = (appointmentController: AppointmentContro
    *             $ref: '#/components/schemas/UpdateAppointmentRequest'
    *           example:
    *             estado_cita: "confirmada"
-   *             fecha_cita: "2024-01-15T11:00:00.000Z"
+   *             fecha_cita: "2025-11-15T11:00:00.000Z"
    *             checklist:
    *               - description: "Revisar álgebra avanzada"
    *                 completed: true

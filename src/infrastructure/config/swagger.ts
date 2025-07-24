@@ -34,8 +34,8 @@ const swaggerDefinition: SwaggerDefinition = {
   servers: [
     {
       url: process.env.NODE_ENV === 'production' 
-        ? 'https://api.tutoria.com/appointments' 
-        : `http://localhost:${process.env.PORT || 3002}`,
+        ? 'https://api.tutoria.com/s1/appointments' 
+        : `http://localhost:${process.env.PORT || 3002}/s1`,
       description: process.env.NODE_ENV === 'production' ? 'Servidor de Producción' : 'Servidor de Desarrollo'
     }
   ],
@@ -68,7 +68,7 @@ const swaggerDefinition: SwaggerDefinition = {
             type: 'string',
             format: 'date-time',
             description: 'Fecha y hora de la cita en formato ISO 8601',
-            example: '2024-01-15T10:00:00.000Z'
+            example: '2025-11-15T10:00:00.000Z'
           },
           checklist: {
             type: 'array',

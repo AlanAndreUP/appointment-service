@@ -86,7 +86,7 @@ Crear nueva cita.
 {
   "id_tutor": "tutor_id",
   "id_alumno": "alumno_id", 
-  "fecha_cita": "2024-01-15T10:00:00.000Z",
+  "fecha_cita": "2025-11-15T10:00:00.000Z",
   "to_do": "Revisar álgebra básica"
 }
 ```
@@ -113,7 +113,7 @@ Actualizar cita existente.
 ```json
 {
   "estado_cita": "confirmada",
-  "fecha_cita": "2024-01-15T11:00:00.000Z",
+  "fecha_cita": "2025-11-15T11:00:00.000Z",
   "to_do": "Revisar álgebra avanzada",
   "finish_to_do": "Completó ejercicios básicos"
 }

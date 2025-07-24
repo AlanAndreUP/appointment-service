@@ -27,7 +27,7 @@ export const createHealthRoutes = (): Router => {
    *             example:
    *               data:
    *                 status: "OK"
-   *                 timestamp: "2024-01-15T10:30:00.000Z"
+   *                 timestamp: "2025-11-15T10:30:00.000Z"
    *                 uptime: 3600.5
    *                 version: "1.0.0"
    *               message: "Servicio de citas funcionando correctamente"
@@ -103,7 +103,7 @@ export const createHealthRoutes = (): Router => {
    *             example:
    *               data:
    *                 status: "OK"
-   *                 timestamp: "2024-01-15T10:30:00.000Z"
+   *                 timestamp: "2025-11-15T10:30:00.000Z"
    *                 uptime: 3600.5
    *                 version: "1.0.0"
    *                 environment: "development"
@@ -128,7 +128,7 @@ export const createHealthRoutes = (): Router => {
    *             example:
    *               data:
    *                 status: "ERROR"
-   *                 timestamp: "2024-01-15T10:30:00.000Z"
+   *                 timestamp: "2025-11-15T10:30:00.000Z"
    *                 error: "Database connection failed"
    *               message: "Error en health check"
    *               status: "error"
