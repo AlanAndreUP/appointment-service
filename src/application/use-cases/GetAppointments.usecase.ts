@@ -7,7 +7,7 @@ export class GetAppointmentsUseCase {
   ) {}
 
   async execute(filters: AppointmentFilters): Promise<{
-    appointments: AppointmentResponse[];
+    data: AppointmentResponse[];
     pagination: PaginationMeta;
   }> {
     const result = await this.appointmentRepository.findByFilters(filters);
@@ -26,7 +26,7 @@ export class GetAppointmentsUseCase {
     }));  
 
     return {
-      appointments,
+      data: appointments,
       pagination: result.pagination
     };
   }
