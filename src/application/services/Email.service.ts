@@ -4,8 +4,8 @@ import { ExternalUserService } from './ExternalUserService';
 import { UserInfo } from '@domain/value-objects/UserInfo';
 
 export class EmailService {
-  private resend: Resend;
-  private userService?: ExternalUserService;
+  private readonly resend: Resend;
+  private readonly userService?: ExternalUserService;
 
   constructor(userService?: ExternalUserService) {
     this.resend = new Resend(process.env.RESEND_API_KEY);
@@ -190,7 +190,6 @@ export class EmailService {
     otherUser?: UserInfo
   ): string {
     const otherUserInfo = otherUser ? `${otherUser.name} (${otherUser.email.value})` : 'Usuario';
-    const recipientRole = recipient.role === 'tutor' ? 'tutor' : 'alumno';
     const otherRole = recipient.role === 'tutor' ? 'alumno' : 'tutor';
 
     switch (eventType) {
@@ -214,7 +213,8 @@ export class EmailService {
               <p><strong>ID:</strong> ${appointment.id}</p>
               <p><strong>Fecha:</strong> ${appointment.fecha_cita.toLocaleString('es-ES')}</p>
               <p><strong>Estado:</strong> ${appointment.estado_cita}</p>
-              ${appointment.to_do ? `<p><strong>Tarea:</strong> ${appointment.to_do}</p>` : ''}
+              ${appointment.checklist.length > 0 ? `<p><strong>Tareas:</strong> ${appointment.checklist.map(item => item.description).join(', ')}</p>` : ''}
+              ${appointment.reason ? `<p><strong>Motivo:</strong> ${appointment.reason}</p>` : ''}
             </div>
             
             <p>Por favor, confirma tu disponibilidad para esta cita.</p>
@@ -257,7 +257,8 @@ export class EmailService {
           <p><strong>Alumno:</strong> ${appointment.id_alumno}</p>
           <p><strong>Fecha:</strong> ${appointment.fecha_cita.toLocaleString('es-ES')}</p>
           <p><strong>Estado:</strong> ${appointment.estado_cita}</p>
-          ${appointment.to_do ? `<p><strong>Tareas:</strong> ${appointment.to_do}</p>` : ''}
+          ${appointment.checklist.length > 0 ? `<p><strong>Tareas:</strong> ${appointment.checklist.map(item => item.description).join(', ')}</p>` : ''}
+          ${appointment.reason ? `<p><strong>Motivo:</strong> ${appointment.reason}</p>` : ''}
         </div>
         
         <p style="margin-top: 20px;">
@@ -291,8 +292,8 @@ export class EmailService {
           <p><strong>Alumno:</strong> ${appointment.id_alumno}</p>
           <p><strong>Fecha:</strong> ${appointment.fecha_cita.toLocaleString('es-ES')}</p>
           <p><strong>Estado:</strong> ${appointment.estado_cita}</p>
-          ${appointment.to_do ? `<p><strong>Tareas:</strong> ${appointment.to_do}</p>` : ''}
-          ${appointment.finish_to_do ? `<p><strong>Tareas Completadas:</strong> ${appointment.finish_to_do}</p>` : ''}
+          ${appointment.checklist.length > 0 ? `<p><strong>Tareas:</strong> ${appointment.checklist.map(item => item.description).join(', ')}</p>` : ''}
+          ${appointment.reason ? `<p><strong>Motivo:</strong> ${appointment.reason}</p>` : ''}
         </div>
         
         <p style="margin-top: 20px;">
@@ -318,6 +319,8 @@ export class EmailService {
           <p><strong>Alumno:</strong> ${appointment.id_alumno}</p>
           <p><strong>Fecha:</strong> ${appointment.fecha_cita.toLocaleString('es-ES')}</p>
           <p><strong>Estado:</strong> ${appointment.estado_cita}</p>
+          ${appointment.checklist.length > 0 ? `<p><strong>Tareas:</strong> ${appointment.checklist.map(item => item.description).join(', ')}</p>` : ''}
+          ${appointment.reason ? `<p><strong>Motivo:</strong> ${appointment.reason}</p>` : ''}
         </div>
         
         <p style="margin-top: 20px;">

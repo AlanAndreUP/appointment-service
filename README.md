@@ -160,8 +160,8 @@ Todas las plantillas son responsive y incluyen:
   created_at: Date;
   updated_at: Date;
   deleted_at?: Date;
-  to_do?: string;
-  finish_to_do?: string;
+  checklist?: { description: string; completed: boolean }[];
+  reason?: string | null;
 }
 ```
 

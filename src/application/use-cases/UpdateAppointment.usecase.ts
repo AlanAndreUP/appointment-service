@@ -59,20 +59,22 @@ export class UpdateAppointmentUseCase extends BaseUseCase {
       updatedAppointment = updatedAppointment.updateStatus(request.estado_cita);
     }
 
-    // Actualizar tareas si se proporcionan
-    if (request.to_do !== undefined || request.finish_to_do !== undefined) {
-      updatedAppointment = updatedAppointment.updateTodo(
-        request.to_do,
-        request.finish_to_do
-      );
+    // Actualizar checklist si se proporciona
+    if (request.checklist !== undefined) {
+      updatedAppointment = updatedAppointment.updateChecklist(request.checklist);
+    }
+
+    // Actualizar reason si se proporciona
+    if (request.reason !== undefined) {
+      updatedAppointment = updatedAppointment.updateReason(request.reason);
     }
 
     // Guardar cambios
     const savedAppointment = await this.appointmentRepository.update(id, {
       estado_cita: updatedAppointment.estado_cita,
       fecha_cita: updatedAppointment.fecha_cita,
-      to_do: updatedAppointment.to_do,
-      finish_to_do: updatedAppointment.finish_to_do,
+      checklist: updatedAppointment.checklist,
+      reason: updatedAppointment.reason,
       updated_at: new Date()
     });
 
@@ -111,8 +113,8 @@ export class UpdateAppointmentUseCase extends BaseUseCase {
       created_at: savedAppointment.created_at,
       updated_at: savedAppointment.updated_at,
       deleted_at: savedAppointment.deleted_at,
-      to_do: savedAppointment.to_do,
-      finish_to_do: savedAppointment.finish_to_do
+      checklist: savedAppointment.checklist,
+      reason: savedAppointment.reason
     };
   }
 

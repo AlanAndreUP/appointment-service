@@ -8,7 +8,8 @@ export interface CreateAppointmentRequest {
   tutorId: string;
   studentId: string;
   appointmentDate: string; // ISO string
-  pendingTask?: string;
+  checklist?: string[];
+  reason?: string;
 }
 
 export class CreateAppointmentWithNotificationUseCase {
@@ -31,7 +32,8 @@ export class CreateAppointmentWithNotificationUseCase {
         tutorId: request.tutorId,
         studentId: request.studentId,
         appointmentDate: new Date(request.appointmentDate),
-        pendingTask: request.pendingTask
+        checklist: request.checklist,
+        reason: request.reason
       };
 
       const appointmentAggregate = AppointmentAggregate.create(creationData);
@@ -46,8 +48,8 @@ export class CreateAppointmentWithNotificationUseCase {
         id_alumno: appointmentData.id_alumno,
         fecha_cita: appointmentData.fecha_cita,
         estado_cita: appointmentData.estado_cita,
-        to_do: appointmentData.to_do,
-        finish_to_do: appointmentData.finish_to_do,
+        checklist: appointmentData.checklist,
+        reason: appointmentData.reason,
         created_at: appointmentData.created_at,
         updated_at: appointmentData.updated_at,
         deleted_at: appointmentData.deleted_at

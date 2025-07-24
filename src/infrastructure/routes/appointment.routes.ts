@@ -34,7 +34,12 @@ export const createAppointmentRoutes = (appointmentController: AppointmentContro
    *             id_tutor: "tutor_123"
    *             id_alumno: "alumno_456"
    *             fecha_cita: "2024-01-15T10:00:00.000Z"
-   *             to_do: "Revisar álgebra básica y ecuaciones lineales"
+   *             checklist:
+   *               - description: "Revisar álgebra básica y ecuaciones lineales"
+   *                 completed: false
+   *               - description: "Resolver ejercicios de práctica"
+   *                 completed: false
+   *             reason: "Preparación para examen parcial"
    *     responses:
    *       201:
    *         description: Cita creada exitosamente
@@ -254,8 +259,12 @@ export const createAppointmentRoutes = (appointmentController: AppointmentContro
    *           example:
    *             estado_cita: "confirmada"
    *             fecha_cita: "2024-01-15T11:00:00.000Z"
-   *             to_do: "Revisar álgebra avanzada"
-   *             finish_to_do: "Completó ejercicios básicos"
+   *             checklist:
+   *               - description: "Revisar álgebra avanzada"
+   *                 completed: true
+   *               - description: "Resolver problemas de ecuaciones"
+   *                 completed: false
+   *             reason: "Seguimiento de avance académico"
    *     responses:
    *       200:
    *         description: Cita actualizada exitosamente

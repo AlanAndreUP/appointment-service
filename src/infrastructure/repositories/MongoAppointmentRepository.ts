@@ -15,8 +15,8 @@ export class MongoAppointmentRepository implements AppointmentRepository {
       created_at: appointment.created_at,
       updated_at: appointment.updated_at,
       deleted_at: appointment.deleted_at,
-      to_do: appointment.to_do,
-      finish_to_do: appointment.finish_to_do
+      checklist: appointment.checklist,
+      reason: appointment.reason
     });
 
     const savedDoc = await appointmentDoc.save();
@@ -90,16 +90,17 @@ export class MongoAppointmentRepository implements AppointmentRepository {
   }
 
   async update(id: string, updateData: Partial<Appointment>): Promise<Appointment | null> {
-    const doc = await AppointmentModel.findOneAndUpdate(
-      { _id: id, deleted_at: null },
+    const updatedDoc = await AppointmentModel.findByIdAndUpdate(
+      id,
       {
-        ...updateData,
-        updated_at: new Date()
+        $set: {
+          ...updateData,
+          updated_at: new Date()
+        }
       },
       { new: true }
     );
-
-    return doc ? this.mapToEntity(doc) : null;
+    return updatedDoc ? this.mapToEntity(updatedDoc) : null;
   }
 
   async delete(id: string): Promise<boolean> {
@@ -209,9 +210,9 @@ export class MongoAppointmentRepository implements AppointmentRepository {
       doc.fecha_cita,
       doc.created_at,
       doc.updated_at,
-      doc.deleted_at || undefined,
-      doc.to_do || undefined,
-      doc.finish_to_do || undefined
+      doc.deleted_at,
+      doc.checklist ?? [],
+      doc.reason ?? null
     );
   }
 } 

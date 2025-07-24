@@ -2,11 +2,10 @@ import { Resend } from 'resend';
 import { Appointment } from '@domain/entities/Appointment.entity';
 import { ExternalUserService } from './ExternalUserService';
 import { UserInfo } from '@domain/value-objects/UserInfo';
-import { UserId } from '@domain/value-objects/UserId';
 
 export class EnhancedEmailService {
-  private resend: Resend;
-  private userService?: ExternalUserService;
+  private readonly resend: Resend;
+  private readonly userService?: ExternalUserService;
 
   constructor(userService?: ExternalUserService) {
     this.resend = new Resend(process.env.RESEND_API_KEY);
@@ -170,7 +169,6 @@ export class EnhancedEmailService {
   }
 
   private getEnhancedCreatedTemplate(appointment: Appointment, recipient: UserInfo, otherUserInfo: string): string {
-    const recipientRole = recipient.role === 'tutor' ? 'tutor' : 'alumno';
     const otherRole = recipient.role === 'tutor' ? 'alumno' : 'tutor';
 
     return `
@@ -192,7 +190,8 @@ export class EnhancedEmailService {
           <p><strong>ID:</strong> ${appointment.id}</p>
           <p><strong>Fecha:</strong> ${appointment.fecha_cita.toLocaleString('es-ES')}</p>
           <p><strong>Estado:</strong> ${appointment.estado_cita}</p>
-          ${appointment.to_do ? `<p><strong>Tarea Pendiente:</strong> ${appointment.to_do}</p>` : ''}
+          ${appointment.checklist.length > 0 ? `<p><strong>Tareas:</strong> ${appointment.checklist.map(item => item.description).join(', ')}</p>` : ''}
+          ${appointment.reason ? `<p><strong>Motivo:</strong> ${appointment.reason}</p>` : ''}
         </div>
         
         <p style="margin-top: 20px;">
@@ -212,7 +211,6 @@ export class EnhancedEmailService {
   }
 
   private getEnhancedUpdatedTemplate(appointment: Appointment, recipient: UserInfo, otherUserInfo: string): string {
-    const recipientRole = recipient.role === 'tutor' ? 'tutor' : 'alumno';
     const otherRole = recipient.role === 'tutor' ? 'alumno' : 'tutor';
 
     return `
@@ -234,8 +232,8 @@ export class EnhancedEmailService {
           <p><strong>ID:</strong> ${appointment.id}</p>
           <p><strong>Fecha:</strong> ${appointment.fecha_cita.toLocaleString('es-ES')}</p>
           <p><strong>Estado:</strong> ${appointment.estado_cita}</p>
-          ${appointment.to_do ? `<p><strong>Tarea Pendiente:</strong> ${appointment.to_do}</p>` : ''}
-          ${appointment.finish_to_do ? `<p><strong>Tarea Completada:</strong> ${appointment.finish_to_do}</p>` : ''}
+          ${appointment.checklist.length > 0 ? `<p><strong>Tareas:</strong> ${appointment.checklist.map(item => item.description).join(', ')}</p>` : ''}
+          ${appointment.reason ? `<p><strong>Motivo:</strong> ${appointment.reason}</p>` : ''}
         </div>
         
         <p style="margin-top: 20px;">
@@ -253,7 +251,6 @@ export class EnhancedEmailService {
   }
 
   private getEnhancedCancelledTemplate(appointment: Appointment, recipient: UserInfo, otherUserInfo: string): string {
-    const recipientRole = recipient.role === 'tutor' ? 'tutor' : 'alumno';
     const otherRole = recipient.role === 'tutor' ? 'alumno' : 'tutor';
 
     return `
@@ -275,6 +272,8 @@ export class EnhancedEmailService {
           <p><strong>ID:</strong> ${appointment.id}</p>
           <p><strong>Fecha Original:</strong> ${appointment.fecha_cita.toLocaleString('es-ES')}</p>
           <p><strong>Estado:</strong> ${appointment.estado_cita}</p>
+          ${appointment.checklist.length > 0 ? `<p><strong>Tareas:</strong> ${appointment.checklist.map(item => item.description).join(', ')}</p>` : ''}
+          ${appointment.reason ? `<p><strong>Motivo:</strong> ${appointment.reason}</p>` : ''}
         </div>
         
         <p style="margin-top: 20px;">

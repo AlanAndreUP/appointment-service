@@ -3,12 +3,14 @@ import { AppointmentRepository } from '@domain/repositories/AppointmentRepositor
 import { EnhancedEmailService } from '@application/services/EnhancedEmailService';
 import { ApiResponse } from '@shared/types/response.types';
 import { BaseUseCase, BaseContext } from './BaseUseCase';
+import { ChecklistItem } from '@shared/types/Checklist.type';
 
 export interface CreateAppointmentRequest {
   id_tutor: string;
   id_alumno: string;
   fecha_cita: string; // ISO string
-  to_do?: string;
+  checklist?: ChecklistItem[];
+  reason?: string | null;
 }
 
 export interface CreateAppointmentContext extends BaseContext {
@@ -34,7 +36,8 @@ export class CreateAppointmentUseCase extends BaseUseCase {
         request.id_tutor,
         request.id_alumno,
         new Date(request.fecha_cita),
-        request.to_do
+        request.checklist,
+        request.reason
       );
 
       // Guardar en base de datos

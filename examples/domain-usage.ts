@@ -18,7 +18,7 @@ function createAppointmentExample() {
       tutorId: 'tutor123',
       studentId: 'student456',
       appointmentDate: new Date('2024-12-25T10:00:00Z'),
-      pendingTask: 'Revisar ejercicios de matemáticas'
+      todoList: TodoList.create('Revisar ejercicios de matemáticas')
     });
 
     console.log('Cita creada:', appointment.toJSON());
@@ -90,7 +90,7 @@ function businessValidationExample() {
   try {
     // Intentar crear una cita en el pasado (debería fallar)
     const pastDate = new Date('2023-01-01T10:00:00Z');
-    const appointment = AppointmentAggregate.create({
+    AppointmentAggregate.create({
       tutorId: 'tutor123',
       studentId: 'student456',
       appointmentDate: pastDate
@@ -103,7 +103,7 @@ function businessValidationExample() {
   try {
     // Intentar crear una cita en domingo (debería fallar)
     const sundayDate = new Date('2024-12-29T10:00:00Z'); // Domingo
-    const appointment = AppointmentAggregate.create({
+    AppointmentAggregate.create({
       tutorId: 'tutor123',
       studentId: 'student456',
       appointmentDate: sundayDate
@@ -116,7 +116,7 @@ function businessValidationExample() {
   try {
     // Intentar crear una cita fuera de horario laboral (debería fallar)
     const lateDate = new Date('2024-12-25T22:00:00Z'); // 10 PM
-    const appointment = AppointmentAggregate.create({
+    AppointmentAggregate.create({
       tutorId: 'tutor123',
       studentId: 'student456',
       appointmentDate: lateDate
@@ -137,7 +137,7 @@ function completeAppointmentFlowExample() {
       tutorId: 'tutor123',
       studentId: 'student456',
       appointmentDate: new Date('2024-12-25T10:00:00Z'),
-      pendingTask: 'Revisar tarea de matemáticas'
+      todoList: TodoList.create('Revisar tarea de matemáticas')
     });
     
     console.log('1. Cita creada:', appointment.status.value);
@@ -147,8 +147,8 @@ function completeAppointmentFlowExample() {
     console.log('2. Cita confirmada:', appointment.status.value);
     
     // 3. Actualizar tarea
-    appointment = appointment.updateTodoList({
-      pendingTask: 'Revisar tarea de matemáticas y resolver dudas'
+    appointment = appointment.update({
+      todoList: TodoList.create('Revisar tarea de matemáticas y resolver dudas')
     });
     console.log('3. Tarea actualizada:', appointment.todoList.pendingTask?.value);
     
@@ -163,11 +163,13 @@ function completeAppointmentFlowExample() {
       appointment.timeStamps.createdAt,
       appointment.timeStamps.updatedAt,
       undefined,
-      appointment.todoList.pendingTask?.value
+      appointment.todoList
     );
     
     // 5. Completar cita
-    const completedAppointment = pastAppointment.completeAppointment('Dudas resueltas exitosamente');
+    const completedAppointment = pastAppointment.update({
+      todoList: TodoList.create('Dudas resueltas exitosamente')
+    });
     console.log('4. Cita completada:', completedAppointment.status.value);
     console.log('   Tarea completada:', completedAppointment.todoList.completedTask?.value);
     
