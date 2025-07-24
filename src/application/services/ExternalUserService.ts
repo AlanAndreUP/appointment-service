@@ -39,7 +39,6 @@ export class ExternalUserService implements UserService {
    * Obtiene información de un usuario usando su token
    */
   async getUserByToken(token: string,userId:string): Promise<UserInfo> {
-    console.log(token,userId);
     const user = await this.authService.getUserProfile(token,userId);
     
     // Guardar en caché

@@ -23,7 +23,7 @@ interface AuthApiResponse {
 export class ExternalAuthService {
   private baseURL: string;
 
-  constructor(baseURL: string = 'https://api.rutasegura.xyz/auth') {
+  constructor(baseURL: string = 'https://api.psicodemy.com') {
     this.baseURL = baseURL;
   }
 
@@ -32,6 +32,7 @@ export class ExternalAuthService {
    */
   async getUserProfile(token: string,userId:string): Promise<UserInfo> {
     try {
+
       const response = await fetch(`${this.baseURL}/auth/profile/${userId}`, {
         method: 'GET',
         headers: {
@@ -78,6 +79,7 @@ export class ExternalAuthService {
    */
   async validateToken(token: string, userId: string): Promise<boolean> {
     try {
+      console.log(userId);
       await this.getUserProfile(token, userId);
       return true;
     } catch (error) {

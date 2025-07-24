@@ -8,15 +8,27 @@ const swaggerDefinition: SwaggerDefinition = {
     description: `
       Microservicio de gestión de citas construido con TypeScript, Express, MongoDB y Resend.
       
+      ## Endpoints principales:
+      - POST   /s1/appointments: Crear nueva cita
+      - GET    /s1/appointments: Listar citas con filtros y paginación
+      - GET    /s1/appointments/{id}: Obtener cita por ID
+      - PUT    /s1/appointments/{id}: Actualizar cita completa
+      - PUT    /s1/appointments/{id}/status: Actualizar solo el estado de la cita
+      - DELETE /s1/appointments/{id}: Eliminar cita (soft delete)
+      - GET    /s1/health: Health check básico
+      - GET    /s1/health/detailed: Health check detallado
+      - GET    /s1/docs: Documentación Swagger UI
+      - GET    /s1/swagger.json: Especificación OpenAPI
+      
       ## Características principales:
-      - ✅ CRUD completo de citas
-      - ✅ Estados de cita: pendiente, confirmada, cancelada, completada, no_asistio
-      - ✅ Sistema de tareas (checklist) y razón de la cita (reason)
-      - ✅ Notificaciones por email con Resend
-      - ✅ Validación de conflictos de horario
-      - ✅ Filtros avanzados y paginación
-      - ✅ Arquitectura Hexagonal (Puertos y Adaptadores)
-      - ✅ Middleware de autenticación JWT
+      - CRUD completo de citas
+      - Estados de cita: pendiente, confirmada, cancelada, completada, no_asistio
+      - Sistema de tareas (checklist) y razón de la cita (reason)
+      - Notificaciones por email con Resend
+      - Validación de conflictos de horario
+      - Filtros avanzados y paginación
+      - Arquitectura Hexagonal (Puertos y Adaptadores)
+      - Middleware de autenticación JWT
       
       ## Autenticación
       Todos los endpoints (excepto health checks) requieren autenticación JWT.
