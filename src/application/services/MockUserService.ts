@@ -1,11 +1,12 @@
-import { UserService } from './UserService.interface';
+import { ExternalUserService } from './ExternalUserService';
 import { UserInfo } from '@domain/value-objects/UserInfo';
 import { UserId } from '@domain/value-objects/UserId';
 
-export class MockUserService implements UserService {
+export class MockUserService extends ExternalUserService {
   private users: Map<string, UserInfo> = new Map();
 
   constructor() {
+    super();
     this.initializeDefaultUsers();
   }
 

@@ -22,8 +22,8 @@ export class GetAppointmentByIdUseCase {
       created_at: appointment.created_at,
       updated_at: appointment.updated_at,
       deleted_at: appointment.deleted_at,
-      to_do: appointment.to_do,
-      finish_to_do: appointment.finish_to_do
+      checklist: appointment.checklist,
+      reason: appointment.reason
     };
   }
 } 

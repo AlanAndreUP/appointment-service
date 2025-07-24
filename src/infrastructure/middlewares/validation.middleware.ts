@@ -85,19 +85,25 @@ export const validateUpdateAppointment = [
       return true;
     }),
   
-  body('to_do')
+  body('checklist')
+    .optional()
+    .isArray()
+    .withMessage('El checklist debe ser un arreglo')
+    .custom((value) => {
+      if (value) {
+        for (const item of value) {
+          if (typeof item.description !== 'string' || typeof item.completed !== 'boolean') {
+            throw new Error('Cada elemento del checklist debe tener description (string) y completed (boolean)');
+          }
+        }
+      }
+      return true;
+    }),
+
+  body('reason')
     .optional()
     .isString()
-    .withMessage('Las tareas deben ser una cadena')
-    .isLength({ max: 1000 })
-    .withMessage('Las tareas no pueden exceder 1000 caracteres'),
-  
-  body('finish_to_do')
-    .optional()
-    .isString()
-    .withMessage('Las tareas completadas deben ser una cadena')
-    .isLength({ max: 1000 })
-    .withMessage('Las tareas completadas no pueden exceder 1000 caracteres'),
+    .withMessage('El motivo debe ser una cadena de texto'),
   
   handleValidationErrors
 ];

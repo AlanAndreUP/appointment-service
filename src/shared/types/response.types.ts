@@ -1,3 +1,5 @@
+import { ChecklistItem } from "./Checklist.type";
+
 export interface ApiResponse<T = any> {
   data: T;
   message: string;
@@ -30,14 +32,15 @@ export interface CreateAppointmentRequest {
   id_tutor: string;
   id_alumno: string;
   fecha_cita: string; // ISO string
-  to_do?: string;
+  checklist?: ChecklistItem[];
+  reason?: string | null;
 }
 
 export interface UpdateAppointmentRequest {
   estado_cita?: EstadoCita;
   fecha_cita?: string;
-  to_do?: string;
-  finish_to_do?: string;
+  checklist?: ChecklistItem[];
+  reason?: string | null;
 }
 
 export interface AppointmentResponse {
@@ -49,8 +52,8 @@ export interface AppointmentResponse {
   created_at: Date;
   updated_at: Date;
   deleted_at?: Date;
-  to_do?: string;
-  finish_to_do?: string;
+  checklist?: ChecklistItem[];
+  reason?: string | null;
 }
 
 export interface AppointmentFilters {
@@ -61,4 +64,4 @@ export interface AppointmentFilters {
   fecha_hasta?: string;
   page?: number;
   limit?: number;
-} 
+}

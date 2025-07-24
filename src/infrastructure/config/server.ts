@@ -74,7 +74,7 @@ export class AppServer {
       console.log('📅 Appointment Service iniciado');
       console.log(`🌐 Puerto: ${this.port}`);
       console.log(`🔧 Entorno: ${process.env.NODE_ENV || 'development'}`);
-      console.log(`📧 Email configurado: ${!!process.env.RESEND_API_KEY ? '✅' : '❌'}`);
+      console.log(`📧 Email configurado: ${process.env.RESEND_API_KEY ? '✅' : '❌'}`);
       console.log('================================');
       console.log('');
       console.log('📡 Endpoints disponibles:');

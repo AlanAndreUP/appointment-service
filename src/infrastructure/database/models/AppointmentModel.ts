@@ -1,5 +1,6 @@
 import mongoose, { Schema, Document } from 'mongoose';
 import { EstadoCita } from '@shared/types/response.types';
+import { ChecklistItem } from '@shared/types/Checklist.type';
 
 export interface IAppointmentDocument extends Document {
   _id: string;
@@ -10,9 +11,14 @@ export interface IAppointmentDocument extends Document {
   created_at: Date;
   updated_at: Date;
   deleted_at?: Date;
-  to_do?: string;
-  finish_to_do?: string;
+  checklist?: ChecklistItem[];
+  reason?: string | null;
 }
+
+const ChecklistItemSchema = new Schema<ChecklistItem>({
+  description: { type: String, required: true },
+  completed: { type: Boolean, required: true }
+});
 
 const AppointmentSchema = new Schema<IAppointmentDocument>({
   _id: {
@@ -53,13 +59,13 @@ const AppointmentSchema = new Schema<IAppointmentDocument>({
     default: null,
     index: true
   },
-  to_do: {
-    type: String,
-    trim: true
+  checklist: {
+    type: [ChecklistItemSchema],
+    default: []
   },
-  finish_to_do: {
+  reason: {
     type: String,
-    trim: true
+    default: null
   }
 }, {
   collection: 'appointments',

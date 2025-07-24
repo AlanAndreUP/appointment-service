@@ -49,7 +49,8 @@ export class CreateAppointmentWithTokensUseCase {
         tutorId: request.tutorId,
         studentId: request.studentId,
         appointmentDate: new Date(request.appointmentDate),
-        pendingTask: request.pendingTask
+        checklist: request.checklist,
+        reason: request.reason
       };
 
       const appointmentAggregate = AppointmentAggregate.create(creationData);
@@ -68,8 +69,8 @@ export class CreateAppointmentWithTokensUseCase {
         appointmentData.created_at,
         appointmentData.updated_at,
         appointmentData.deleted_at,
-        appointmentData.to_do,
-        appointmentData.finish_to_do
+        appointmentData.checklist,
+        appointmentData.reason
       );
 
       const savedAppointment = await this.appointmentRepository.save(legacyAppointment);

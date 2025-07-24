@@ -1,11 +1,11 @@
 import { EnhancedEmailService } from '@application/services/EnhancedEmailService';
 import { MockUserService } from '@application/services/MockUserService';
-import { UserService } from '@application/services/UserService.interface';
+import { ExternalUserService } from '@application/services/ExternalUserService';
 
 // Configuración de dependencias para el sistema de emails
 export class EmailDependencies {
   private static instance: EmailDependencies;
-  private _userService: UserService;
+  private _userService: ExternalUserService;
   private _emailService: EnhancedEmailService;
 
   private constructor() {
@@ -20,7 +20,7 @@ export class EmailDependencies {
     return EmailDependencies.instance;
   }
 
-  get userService(): UserService {
+  get userService(): ExternalUserService {
     return this._userService;
   }
 
@@ -29,7 +29,7 @@ export class EmailDependencies {
   }
 
   // Método para reconfigurar con un servicio de usuario diferente
-  setUserService(userService: UserService): void {
+  setUserService(userService: ExternalUserService): void {
     this._userService = userService;
     this._emailService = new EnhancedEmailService(this._userService);
   }

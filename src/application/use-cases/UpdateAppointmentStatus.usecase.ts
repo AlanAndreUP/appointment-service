@@ -70,8 +70,8 @@ export class UpdateAppointmentStatusUseCase extends BaseUseCase {
       created_at: updatedAppointment.created_at,
       updated_at: updatedAppointment.updated_at,
       deleted_at: updatedAppointment.deleted_at,
-      to_do: updatedAppointment.to_do,
-      finish_to_do: updatedAppointment.finish_to_do
+      checklist: updatedAppointment.checklist,
+      reason: updatedAppointment.reason
     };
   }
 

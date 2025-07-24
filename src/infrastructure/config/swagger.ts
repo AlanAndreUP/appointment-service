@@ -1,5 +1,4 @@
-import swaggerJSDoc from 'swagger-jsdoc';
-import { SwaggerDefinition } from 'swagger-jsdoc';
+import swaggerJSDoc, { SwaggerDefinition } from 'swagger-jsdoc';
 
 const swaggerDefinition: SwaggerDefinition = {
   openapi: '3.0.0',
@@ -24,7 +23,7 @@ const swaggerDefinition: SwaggerDefinition = {
       ## Características principales:
       - CRUD completo de citas
       - Estados de cita: pendiente, confirmada, cancelada, completada, no_asistio
-      - Sistema de tareas (to_do) y seguimiento (finish_to_do)
+      - Sistema de tareas (checklist) y razón de la cita (reason)
       - Notificaciones por email con Resend
       - Validación de conflictos de horario
       - Filtros avanzados y paginación
@@ -83,11 +82,20 @@ const swaggerDefinition: SwaggerDefinition = {
             description: 'Fecha y hora de la cita en formato ISO 8601',
             example: '2024-01-15T10:00:00.000Z'
           },
-          to_do: {
+          checklist: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                description: { type: 'string' },
+                completed: { type: 'boolean' }
+              }
+            },
+            description: 'Lista de tareas a realizar en la cita'
+          },
+          reason: {
             type: 'string',
-            description: 'Tareas o temas a revisar en la cita',
-            maxLength: 1000,
-            example: 'Revisar álgebra básica y ecuaciones lineales'
+            description: 'Motivo de la cita (opcional)'
           }
         }
       },
@@ -106,16 +114,20 @@ const swaggerDefinition: SwaggerDefinition = {
             format: 'date-time',
             description: 'Nueva fecha y hora de la cita'
           },
-          to_do: {
-            type: 'string',
-            description: 'Tareas o temas a revisar',
-            maxLength: 1000
+          checklist: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                description: { type: 'string' },
+                completed: { type: 'boolean' }
+              }
+            },
+            description: 'Lista de tareas a realizar en la cita'
           },
-          finish_to_do: {
+          reason: {
             type: 'string',
-            description: 'Tareas completadas o resultados de la cita',
-            maxLength: 1000,
-            example: 'Completó ejercicios de álgebra. Mejoró comprensión en ecuaciones.'
+            description: 'Motivo de la cita (opcional)'
           }
         }
       },

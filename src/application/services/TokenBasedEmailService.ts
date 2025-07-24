@@ -20,9 +20,9 @@ export interface TokenBasedEmailNotificationData {
 }
 
 export class TokenBasedEmailService {
-  private resend: Resend;
-  private userService: ExternalUserService;
-  private fromEmail: EmailAddress;
+  private readonly resend: Resend;
+  private readonly userService: ExternalUserService;
+  private readonly fromEmail: EmailAddress;
 
   constructor(userService: ExternalUserService) {
     this.resend = new Resend(process.env.RESEND_API_KEY);

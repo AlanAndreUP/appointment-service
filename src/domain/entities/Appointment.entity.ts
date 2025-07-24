@@ -1,4 +1,5 @@
 import { EstadoCita } from '@shared/types/response.types';
+import { ChecklistItem } from '@shared/types/Checklist.type';
 
 export class Appointment {
   constructor(
@@ -10,15 +11,16 @@ export class Appointment {
     public readonly created_at: Date = new Date(),
     public readonly updated_at: Date = new Date(),
     public readonly deleted_at?: Date,
-    public readonly to_do?: string,
-    public readonly finish_to_do?: string
+    public readonly checklist: ChecklistItem[] = [],
+    public readonly reason: string | null = null
   ) {}
 
   static create(
     id_tutor: string,
     id_alumno: string,
     fecha_cita: Date,
-    to_do?: string,
+    checklist?: ChecklistItem[],
+    reason?: string | null,
     id?: string
   ): Appointment {
     return new Appointment(
@@ -30,7 +32,8 @@ export class Appointment {
       new Date(),
       new Date(),
       undefined,
-      to_do
+      checklist ?? [],
+      reason ?? null
     );
   }
 
@@ -48,12 +51,12 @@ export class Appointment {
       this.created_at,
       new Date(), // updated_at
       this.deleted_at,
-      this.to_do,
-      this.finish_to_do
+      this.checklist,
+      this.reason
     );
   }
 
-  updateTodo(to_do?: string, finish_to_do?: string): Appointment {
+  updateChecklist(checklist: ChecklistItem[]): Appointment {
     return new Appointment(
       this.id,
       this.id_tutor,
@@ -63,8 +66,23 @@ export class Appointment {
       this.created_at,
       new Date(), // updated_at
       this.deleted_at,
-      to_do ?? this.to_do,
-      finish_to_do ?? this.finish_to_do
+      checklist,
+      this.reason
+    );
+  }
+
+  updateReason(reason: string | null): Appointment {
+    return new Appointment(
+      this.id,
+      this.id_tutor,
+      this.id_alumno,
+      this.estado_cita,
+      this.fecha_cita,
+      this.created_at,
+      new Date(), // updated_at
+      this.deleted_at,
+      this.checklist,
+      reason
     );
   }
 
@@ -78,8 +96,8 @@ export class Appointment {
       this.created_at,
       new Date(), // updated_at
       this.deleted_at,
-      this.to_do,
-      this.finish_to_do
+      this.checklist,
+      this.reason
     );
   }
 
@@ -93,8 +111,8 @@ export class Appointment {
       this.created_at,
       new Date(),
       new Date(), // deleted_at
-      this.to_do,
-      this.finish_to_do
+      this.checklist,
+      this.reason
     );
   }
 
@@ -132,8 +150,8 @@ export class Appointment {
       created_at: this.created_at,
       updated_at: this.updated_at,
       deleted_at: this.deleted_at,
-      to_do: this.to_do,
-      finish_to_do: this.finish_to_do
+      checklist: this.checklist,
+      reason: this.reason
     };
   }
 } 
